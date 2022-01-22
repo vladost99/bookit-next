@@ -50,7 +50,7 @@ const Register = () => {
 
     }
 
-    const onChange = (e) => {
+    const onChange = async (e) => {
 
         if (e.target.name === 'avatar') {
             let resizeImage = await compressImage(e.target.files[0]);

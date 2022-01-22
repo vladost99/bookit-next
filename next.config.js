@@ -6,10 +6,10 @@ module.exports = {
         CLOUDINARY_API_KEY: '235312536382839',
         CLOUDINARY_SECRET_KEY: 'EJ6LT4ShbuINqEEE2At03GfJh2w',
     
-        SMTP_HOST: 'smtp.mailtrap.io',
-        SMTP_PORT: 2525,
-        SMTP_USER: 'd8cc70551e465a',
-        SMTP_PASSWORD: '0afce379f8abd7',
+        SMTP_HOST: 'smtp.gmail.com',
+        SMTP_PORT: 587,
+        SMTP_USER: 'bookittestmailer@gmail.com',
+        SMTP_PASSWORD: 'AdminQ123',
         SMTP_FROM_NAME: 'BookIT',
         SMTP_FROM_EMAIL: 'noreply@bookit.com',
     

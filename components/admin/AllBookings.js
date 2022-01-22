@@ -84,7 +84,7 @@ const AllBookings = () => {
                 checkOut: new Date(booking.checkOutDate).toLocaleString('en-US'),
                 amount: `$${booking.amountPaid}`,
                 actions:
-                    <>
+                    <div className='col-6 col-md-12 col-sm-12 d-flex justify-content-center align-items-center'>
                         <Link href={`/admin/bookings/${booking._id}`}>
                             <a className="btn btn-primary">
                                 <i className="fa fa-eye"></i>
@@ -99,7 +99,7 @@ const AllBookings = () => {
                             <i className="fa fa-trash"></i>
                         </button>
 
-                    </>
+                    </div>
             })
         })
 
@@ -156,7 +156,7 @@ const AllBookings = () => {
 
 
     return (
-        <div className='container container-fluid'>
+        <div className='container-fluid'>
             {loading ? <Loader /> :
                 <>
                     <h1 className='my-5'>{`${bookings && bookings.length} Bookings`}</h1>

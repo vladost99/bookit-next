@@ -63,7 +63,7 @@ const MyBookings = () => {
                 checkOut: new Date(booking.checkOutDate).toLocaleString('en-US'),
                 amount: `$${booking.amountPaid}`,
                 actions:
-                    <>
+                    <div className='col-6 col-md-12 col-sm-12 d-flex justify-content-center align-items-center'>
                         <Link href={`/bookings/${booking._id}`}>
                             <a className="btn btn-primary">
                                 <i className="fa fa-eye"></i>
@@ -74,7 +74,7 @@ const MyBookings = () => {
                             <i className="fa fa-download"></i>
                         </button>
 
-                    </>
+                    </div>
             })
         })
 
@@ -127,7 +127,7 @@ const MyBookings = () => {
 
 
     return (
-        <div className='container container-fluid'>
+        <div className='container-fluid'>
             <h1 className='my-5'>My Bookings</h1>
 
             <MDBDataTable

@@ -81,7 +81,7 @@ const AllUsers = () => {
                 email: user.email,
                 role: user.role,
                 actions:
-                    <>
+                    <div className='col-6 col-md-12 col-sm-12 d-flex justify-content-center align-items-center'>
                         <Link href={`/admin/users/${user._id}`}>
                             <a className="btn btn-primary">
                                 <i className="fa fa-pencil"></i>
@@ -92,7 +92,7 @@ const AllUsers = () => {
                             <i className="fa fa-trash"></i>
                         </button>
 
-                    </>
+                    </div>
             })
         })
 
@@ -106,7 +106,7 @@ const AllUsers = () => {
 
 
     return (
-        <div className='container container-fluid'>
+        <div className='container-fluid'>
             {loading ? <Loader /> :
                 <>
                     <h1 className='my-5'>{`${users && users.length} Users`}</h1>

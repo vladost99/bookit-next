@@ -100,7 +100,7 @@ const RoomReviews = () => {
 
 
     return (
-        <div className='container container-fluid'>
+        <div className='container-fluid'>
             <div className="row justify-content-center mt-5">
                 <div className="col-5">
                     <form>

@@ -10,7 +10,11 @@ const sendEmail = async options => {
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASSWORD
         }
-    });
+    }, 
+        {
+            from:`Mailer test <${process.env.SMTP_USER}>`
+        }
+    );
 
     const message = {
         from: `${process.env.STMP_FROM_NAME} < ${process.env.STMP_FROM_EMAIL}>`,

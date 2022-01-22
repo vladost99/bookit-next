@@ -17,7 +17,7 @@ module.exports = {
     STRIPE_API_KEY: 'pk_test_51KFpVgAFpiETMzEzJM4k5qtQiiqzvO7wEQ8uHMLbhN5GdGj4iGw5CIjWdLLbB0g1J5T7oY4ouMLOHxfSqgEjzPdR00ZISMruW3',
     STRIPE_SECRET_KEY: 'sk_test_51KFpVgAFpiETMzEzuz846MGVvUyuaiyRooqtDZTt32cCkOkeLETBJlPeX7FumvIs3JMFV69O84N49ZyklyX3y2co00DuUwq3NL',
 
-    NEXTAUTH_URL: 'https://bookit-next-3gk6el0e6-vladost99.vercel.app/'
+    NEXTAUTH_URL: 'https://bookit-next-oowvzry7v-vladost99.vercel.app'
   },
   images: {
     domains: ['res.cloudinary.com']

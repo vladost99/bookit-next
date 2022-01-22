@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { toast } from 'react-toastify'
 import ButtonLoader from '../layout/ButtonLoader'
 import Loader from '../layout/Loader'
-
+import {compressImage} from '../../utils/compressFile';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateProfile, clearErrors } from '../../redux/actions/userActions'
 import { UPDATE_PROFILE_RESET } from '../../redux/constants/userConstants'
@@ -62,9 +62,10 @@ const Profile = () => {
 
     }
 
-    const onChange = (e) => {
+    const onChange = async (e) => {
 
         if (e.target.name === 'avatar') {
+           let resizeImage = await compressImage(e.target.files[0]);
 
             const reader = new FileReader();
 
@@ -75,7 +76,7 @@ const Profile = () => {
                 }
             }
 
-            reader.readAsDataURL(e.target.files[0])
+            reader.readAsDataURL(resizeImage);
 
         } else {
             setUser({ ...user, [e.target.name]: e.target.value })

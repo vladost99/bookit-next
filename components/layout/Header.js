@@ -48,7 +48,7 @@ const Header = () => {
                   <img 
                   src={user.avatar && user.avatar.url} 
                   alt={user && user.name}
-                  className='rouded-circle'
+                  className='rounded-circle'
                    />
                </figure>
                <span>{user && user.name}</span>

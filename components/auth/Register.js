@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 
 import { toast } from 'react-toastify'
 import ButtonLoader from '../layout/ButtonLoader'
-
+import {compressImage} from '../../utils/compressFile';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser, clearErrors } from '../../redux/actions/userActions'
 
@@ -53,7 +53,7 @@ const Register = () => {
     const onChange = (e) => {
 
         if (e.target.name === 'avatar') {
-
+            let resizeImage = await compressImage(e.target.files[0]);
             const reader = new FileReader();
 
             reader.onload = () => {
@@ -63,7 +63,7 @@ const Register = () => {
                 }
             }
 
-            reader.readAsDataURL(e.target.files[0])
+            reader.readAsDataURL(resizeImage)
 
         } else {
             setUser({ ...user, [e.target.name]: e.target.value })

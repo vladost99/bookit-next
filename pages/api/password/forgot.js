@@ -1,9 +1,9 @@
 import nc from 'next-connect'
-import dbConnect from '../../../config/dbConnect';
+import dbConnect from '../../../config/dbConnect'
 
-import { forgotPassword } from '../../../controllers/authController';
+import { forgotPassword } from '../../../controllers/authControllers'
 
-import onError from '../../../middlewares/errors';
+import onError from '../../../middlewares/errors'
 
 const handler = nc({ onError });
 

@@ -1,42 +1,44 @@
-import React, {useEffect} from 'react';
-import Link from 'next/link';
-import {useRouter} from 'next/router';
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
-import { clearErrors } from '../../redux/actions/userActions';
-import {MDBDataTable} from 'mdbreact';
-import Loader from '../layout/Loader';
+import React, { useEffect } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
-import {getAdminUsers, deleteUser} from '../../redux/actions/userActions'
-import { DELETE_AGENT_RESET } from '../../redux/constants/userConstant';
+import { MDBDataTable } from 'mdbreact'
+import Loader from '../layout/Loader'
+
+import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify';
+
+import { getAdminUsers, deleteUser, clearErrors } from '../../redux/actions/userActions'
+import { DELETE_USER_RESET } from '../../redux/constants/userConstants'
 
 const AllUsers = () => {
-    const dispatch = useDispatch();
-    const router = useRouter();
 
-    const {loading, error, users} = useSelector(state => state.allUsers);
-    const {isDeleted,  error: errorDeleted} = useSelector(state => state.user);
+    const dispatch = useDispatch()
+    const router = useRouter()
+
+    const { loading, error, users } = useSelector(state => state.allUsers)
+    const { error: deleteError, isDeleted } = useSelector(state => state.user)
 
     useEffect(() => {
-        dispatch(getAdminUsers());
 
-        if(error) {
+        dispatch(getAdminUsers())
+
+        if (error) {
             toast.error(error);
             dispatch(clearErrors())
         }
 
-        if(isDeleted) {
-            toast.success('User was removed');
-            dispatch({type: DELETE_AGENT_RESET});
+        if (deleteError) {
+            toast.erroe(deleteError);
+            dispatch(clearErrors())
         }
 
-        if(errorDeleted) {
-            toast.error(errorDeleted);
-            dispatch(clearErrors());
+        if (isDeleted) {
+            router.push('/admin/users')
+            dispatch({ type: DELETE_USER_RESET })
         }
-       
 
-    },[dispatch, error, isDeleted, errorDeleted]);
+    }, [dispatch, error, isDeleted])
 
 
     const setUsers = () => {
@@ -67,7 +69,8 @@ const AllUsers = () => {
                     field: 'actions',
                     sort: 'asc'
                 }
-        ],
+
+            ],
             rows: []
         }
 
@@ -78,38 +81,47 @@ const AllUsers = () => {
                 email: user.email,
                 role: user.role,
                 actions:
-                  <div className='col-6 col-md-12 col-sm-12 d-flex justify-content-center align-items-center'>
-                    <Link href={`/admin/users/${user._id}`}>
-                        <a className='btn btn-primary'>
-                            <i className='fa fa-pencil'></i>
-                        </a>
-                    </Link>
-                    <button onClick={() => dispatch(deleteUser(user._id))} className='btn btn-danger mx-2'>
-                        <i className='fa fa-trash'></i>
-                    </button>
-                  </div>
+                    <>
+                        <Link href={`/admin/users/${user._id}`}>
+                            <a className="btn btn-primary">
+                                <i className="fa fa-pencil"></i>
+                            </a>
+                        </Link>
+
+                        <button className="btn btn-danger mx-2" onClick={() => deleteUserHandler(user._id)}>
+                            <i className="fa fa-trash"></i>
+                        </button>
+
+                    </>
             })
         })
+
         return data;
+
     }
 
-    
+    const deleteUserHandler = (id) => {
+        dispatch(deleteUser(id))
+    }
+
 
     return (
-        <div className='container-fluid'>
-           { loading ? <Loader/> : <>
-            <h1 className='my-5'>{`${users && users.length} Users`}
-        
-            </h1>
-            <MDBDataTable
-                data={setUsers()}
-                className='px-3'
-                responsive
-                bordered
-                striped
-                hover
-            />
-           </>}
+        <div className='container container-fluid'>
+            {loading ? <Loader /> :
+                <>
+                    <h1 className='my-5'>{`${users && users.length} Users`}</h1>
+
+
+                    <MDBDataTable
+                        data={setUsers()}
+                        className='px-3'
+                        bordered
+                        striped
+                        hover
+                    />
+
+                </>
+            }
         </div>
     )
 }

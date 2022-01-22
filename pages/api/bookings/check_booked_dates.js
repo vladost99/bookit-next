@@ -1,7 +1,9 @@
-import nc from 'next-connect'
-import dbConnect from '../../../config/dbConnect';
-import { checkBookedDatesOfRoom } from '../../../controllers/bookingController';
-import onError from '../../../middlewares/errors'
+import nc from 'next-connect';
+import dbConnect from '../../../config/dbConnect'
+
+import { checkBookedDatesOfRoom } from '../../../controllers/bookingControllers';
+
+import onError from '../../../middlewares/errors';
 
 const handler = nc({ onError });
 

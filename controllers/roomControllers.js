@@ -1,21 +1,15 @@
-import Room from '../models/room';
-import Booking from '../models/booking';
-import ErrorHandler from '../utils/errorHandler';
-import catchAsyncErrors from '../middlewares/catchAsyncErrors';
-import APIFeatures from '../utils/apiFeatures';
-import cloudinary from 'cloudinary';
+import Room from '../models/room'
+import Booking from '../models/booking'
 
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
-    api_key: process.env.CLOUDINARY_API_KEY, 
-    api_secret: process.env.CLOUDINARY_SECRET_KEY
-})
+import cloudinary from 'cloudinary'
 
+import ErrorHandler from '../utils/errorHandler'
+import catchAsyncErrors from '../middlewares/catchAsyncErrors'
+import APIFeatures from '../utils/apiFeatures'
 
-
-
+// Create all rooms   =>   /api/rooms
 const allRooms = catchAsyncErrors(async (req, res) => {
-    
+
     const resPerPage = 4;
 
     const roomsCount = await Room.countDocuments();
@@ -41,111 +35,130 @@ const allRooms = catchAsyncErrors(async (req, res) => {
 })
 
 
-
+// Create new room   =>   /api/rooms
 const newRoom = catchAsyncErrors(async (req, res) => {
 
     const images = req.body.images;
 
-    let imagesLink = [];
+    let imagesLinks = [];
 
-    for(let i = 0; i < images.length; i++) {
+    for (let i = 0; i < images.length; i++) {
+
         const result = await cloudinary.v2.uploader.upload(images[i], {
             folder: 'bookit/rooms',
-        })
-        imagesLink.push({
+        });
+
+        imagesLinks.push({
             public_id: result.public_id,
             url: result.secure_url
         })
+
     }
 
-    req.body.images = imagesLink;
+    req.body.images = imagesLinks;
     req.body.user = req.user._id
 
     const room = await Room.create(req.body);
+
     res.status(200).json({
         success: true,
-        room,
+        room
+    })
+})
+
+// Get room details   =>   /api/rooms/:id
+const getSingleRoom = catchAsyncErrors(async (req, res, next) => {
+
+    const room = await Room.findById(req.query.id);
+
+    if (!room) {
+        return next(new ErrorHandler('Room not found with this ID', 404))
+    }
+
+    res.status(200).json({
+        success: true,
+        room
     })
 })
 
 
-const getSingleRoom = catchAsyncErrors(async (req, res) => {
-    const room = await Room.findById(req.query.id);
+// Update room details   =>   /api/rooms/:id
+const updateRoom = catchAsyncErrors(async (req, res) => {
 
-    if(!room) {
-       return next(new ErrorHandler('Room not found with this ID', 404))
+    let room = await Room.findById(req.query.id);
+
+    if (!room) {
+        return next(new ErrorHandler('Room not found with this ID', 404))
     }
 
-    return  res.status(200).json({
-            success: true,
-            room,
-        })
- 
+    if (req.body.images) {
+
+        // Delete images associated with the room
+        for (let i = 0; i < room.images.length; i++) {
+            await cloudinary.v2.uploader.destroy(room.images[i].public_id)
+        }
+
+        let imagesLinks = []
+        const images = req.body.images;
+
+        for (let i = 0; i < images.length; i++) {
+
+            const result = await cloudinary.v2.uploader.upload(images[i], {
+                folder: 'bookit/rooms',
+            });
+
+            imagesLinks.push({
+                public_id: result.public_id,
+                url: result.secure_url
+            })
+
+        }
+
+        req.body.images = imagesLinks;
+
+    }
+
+    room = await Room.findByIdAndUpdate(req.query.id, req.body, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false
+    })
+
+    res.status(200).json({
+        success: true,
+        room
+    })
+
 })
 
 
+// Delete room   =>   /api/rooms/:id
+const deleteRoom = catchAsyncErrors(async (req, res) => {
 
-const updateRoom = catchAsyncErrors(async (req, res) => {
-  
-     let room = await Room.findById(req.query.id);
- 
-     if(!room) {
-        return next(new ErrorHandler('Room not found with this ID', 400))
-     }
-     if(req.body.images) {
-         for(let i = 0; i < room.images.length; i++) {
-             await cloudinary.v2.uploader.destroy(room.images[i].public_id);
-         }
-         let imagesLink = [];
+    const room = await Room.findById(req.query.id);
 
-         for(let i = 0; i < req.body.images.length; i++) {
-             const result = await cloudinary.v2.uploader.upload(images[i], {
-                 folder: 'bookit/rooms',
-             })
-             imagesLink.push({
-                 public_id: result.public_id,
-                 url: result.secure_url
-             })
-         }
-         req.body.images = imagesLink;
-     }
-     
-     room = await Room.findByIdAndUpdate(req.query.id, req.body, {
-         new: true,
-         runValidators: true,
-         useFindAndModify: false
-     })
-     
-   return  res.status(200).json({
-         success: true,
-         room,
-     })
- 
- })
-
-
- const deleteRoom = catchAsyncErrors(async (req, res) => {
-   
-     let room = await Room.findById(req.query.id);
- 
-     if(!room) {
-        return next(new ErrorHandler('Room not found with this ID', 400))
-     }
-     for(let i = 0; i < room.images.length; i++) {
-        await cloudinary.v2.uploader.destroy(room.images[i].public_id);
+    if (!room) {
+        return next(new ErrorHandler('Room not found with this ID', 404))
     }
-     
+
+    // Delete images associated with the room
+    for (let i = 0; i < room.images.length; i++) {
+        await cloudinary.v2.uploader.destroy(room.images[i].public_id)
+    }
+
     await room.remove();
-     
+
     res.status(200).json({
-         success: true,
-         message: 'Room is deleted'
-     })
- })
+        success: true,
+        message: 'Room is deleted.'
+    })
+
+})
 
 
- const createRoomReview = catchAsyncErrors(async (req, res) => {
-    
+// Create a new review   =>   /api/reviews
+const createRoomReview = catchAsyncErrors(async (req, res) => {
+
     const { rating, comment, roomId } = req.body;
 
     const review = {
@@ -186,21 +199,27 @@ const updateRoom = catchAsyncErrors(async (req, res) => {
 })
 
 
+// Check Review Availability   =>   /api/reviews/check_review_availability
 const checkReviewAvailability = catchAsyncErrors(async (req, res) => {
-    const {roomId} = req.query;
 
-    const bookings = await Booking.find({user: req.user._id, room: roomId});
+    const { roomId } = req.query;
+
+    const bookings = await Booking.find({ user: req.user._id, room: roomId })
 
     let isReviewAvailable = false;
-    if(bookings.length > 0)  isReviewAvailable = true
+    if (bookings.length > 0) isReviewAvailable = true
+
 
     res.status(200).json({
         success: true,
         isReviewAvailable
     })
+
 })
 
-const allAdminRooms  = catchAsyncErrors(async (req, res) => {
+
+// Get all rooms - ADMIN   =>   /api/admin/rooms
+const allAdminRooms = catchAsyncErrors(async (req, res) => {
 
     const rooms = await Room.find();
 
@@ -208,36 +227,14 @@ const allAdminRooms  = catchAsyncErrors(async (req, res) => {
         success: true,
         rooms
     })
+
 })
 
 
+// Get all room reviews - ADMIN   =>   /api/reviews
 const getRoomReviews = catchAsyncErrors(async (req, res) => {
 
     const room = await Room.findById(req.query.id);
-
-    res.status(200).json({
-        success: true,
-        reviews:  room.reviews
-    })
-
-
-})
-
-const deleteReview = catchAsyncErrors(async (req, res) => {
-    const room = await Room.findById(req.query.roomId);
-
-
-    const reviews = room.reviews.filter(rev => rev._id.toString() !== req.query.id.toString());
-
-    const numOfReviews = reviews.length;
-
-    const ratings = room.reviews.reduce((acc, item) => item.rating + acc, 0) / reviews.length;
-
-    await Room.findByIdAndUpdate(req.query.roomId, {
-        reviews,
-        numOfReviews,
-        ratings
-    }, {new: true, runValidators: true, useFindAndModify: false})
 
     res.status(200).json({
         success: true,
@@ -247,7 +244,32 @@ const deleteReview = catchAsyncErrors(async (req, res) => {
 })
 
 
+// Delete room review - ADMIN   =>   /api/reviews
+const deleteReview = catchAsyncErrors(async (req, res) => {
 
+    const room = await Room.findById(req.query.roomId);
+
+    const reviews = room.reviews.filter(review => review._id.toString() !== req.query.id.toString())
+
+    const numOfReviews = reviews.length;
+
+    const ratings = room.reviews.reduce((acc, item) => item.rating + acc, 0) / reviews.length
+
+    await Room.findByIdAndUpdate(req.query.roomId, {
+        reviews,
+        ratings,
+        numOfReviews
+    }, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false
+    })
+
+    res.status(200).json({
+        success: true
+    })
+
+})
 
 
 export {

@@ -1,14 +1,16 @@
 import React from 'react'
-import {getSession} from 'next-auth/client';
-import Layout from '../../components/layout/Layout';
-import {wrapper} from '../../redux/store';
-import { getBookingDetails} from '../../redux/actions/bookingActions';
-import BookingDetails from './../../components/bookings/BookingDetails';
+import { getSession } from 'next-auth/client'
 
-const BookingPage = () => {
+import BookingDetails from '../../components/booking/BookingDetails'
+import Layout from '../../components/layout/Layout'
+
+import { getBookingDetails } from '../../redux/actions/bookingActions'
+import { wrapper } from '../../redux/store'
+
+const BookingDetailsPage = () => {
     return (
         <Layout title='Booking Details'>
-         <BookingDetails/>
+            <BookingDetails />
         </Layout>
     )
 }
@@ -29,4 +31,4 @@ export const getServerSideProps = wrapper.getServerSideProps(async ({ req, param
 
 })
 
-export default BookingPage
+export default BookingDetailsPage

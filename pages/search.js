@@ -1,12 +1,10 @@
-import Layout from '../components/layout/Layout';
-import SearchPage from '../components/Search';
+import Search from '../components/Search'
+import Layout from '../components/layout/Layout'
 
-function Search() {
+export default function SearchPage() {
     return (
-       <Layout title='Search Rooms'>
-           <SearchPage/>
-       </Layout>
+        <Layout title='Search Rooms' >
+            <Search />
+        </Layout>
     )
 }
-
-export default Search

@@ -1,31 +1,34 @@
 import React from 'react'
-import {getSession} from 'next-auth/client';
-import Profile from '../../components/user/Profile';
-import Layout from '../../components/layout/Layout';
+import { getSession } from 'next-auth/client'
 
+import Profile from '../../components/user/Profile'
+import Layout from '../../components/layout/Layout'
 
 const UpdateProfilePage = () => {
     return (
         <Layout title='Update Profile'>
-         <Profile/>
+            <Profile />
         </Layout>
     )
 }
 
-export async function getServerSideProps(ctx) {
-    const session = await getSession({req: ctx.req});
+export async function getServerSideProps(context) {
 
-    if(!session) {
+    const session = await getSession({ req: context.req })
+
+    if (!session) {
         return {
             redirect: {
                 destination: '/login',
-                premanent: false
+                permanent: false
             }
         }
     }
+
     return {
-        props: {}
+        props: { session }
     }
+
 }
 
 export default UpdateProfilePage

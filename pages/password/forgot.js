@@ -1,12 +1,14 @@
-import React from 'react';
-import ForgotPassword from '../../components/user/ForgotPassword';
-import Layout from '../../components/layout/Layout';
-const forgotPage = () => {
+import React from 'react'
+
+import ForgotPassword from '../../components/user/ForgotPassword'
+import Layout from '../../components/layout/Layout'
+
+const ForgotPasswordPage = () => {
     return (
-        <Layout title='Forgot Page'>
-            <ForgotPassword/>
+        <Layout title='Forgot Password'>
+            <ForgotPassword />
         </Layout>
     )
 }
 
-export default forgotPage
+export default ForgotPasswordPage

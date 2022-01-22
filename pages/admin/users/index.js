@@ -1,31 +1,34 @@
 import React from 'react'
-import {getSession} from 'next-auth/client';
-import AllUsers from '../../../components/admin/AllUsers';
-import Layout from '../../../components/layout/Layout';
+import { getSession } from 'next-auth/client'
 
+import AllUsers from '../../../components/admin/AllUsers'
+import Layout from '../../../components/layout/Layout'
 
-const AllRoomsPage = () => {
+const AllUsersPage = () => {
     return (
         <Layout title='All Users'>
-         <AllUsers/>
+            <AllUsers />
         </Layout>
     )
 }
 
-export async function getServerSideProps(ctx) {
-    const session = await getSession({req: ctx.req});
+export async function getServerSideProps(context) {
 
-    if(!session || session.user.role !== 'admin') {
+    const session = await getSession({ req: context.req })
+
+    if (!session || session.user.role !== 'admin') {
         return {
             redirect: {
                 destination: '/login',
-                premanent: false
+                permanent: false
             }
         }
     }
+
     return {
         props: {}
     }
+
 }
 
-export default AllRoomsPage
+export default AllUsersPage

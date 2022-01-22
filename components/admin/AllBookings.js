@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import { MDBDataTable } from 'mdbreact'
 import easyinvoice from 'easyinvoice'
@@ -10,11 +11,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify';
 
 import { getAdminBookings, deleteBooking, clearErrors } from '../../redux/actions/bookingActions'
-import { DELETE_BOOKING_RESET } from '../../redux/constants/bookingConstant'
+import { DELETE_BOOKING_RESET } from '../../redux/constants/bookingConstants'
 
 const AllBookings = () => {
 
     const dispatch = useDispatch()
+    const router = useRouter()
 
     const { bookings, error, loading } = useSelector(state => state.bookings)
     const { isDeleted, error: deleteError } = useSelector(state => state.booking)
@@ -34,12 +36,12 @@ const AllBookings = () => {
         }
 
         if (isDeleted) {
-            toast.success('Booking was removed');
+            router.push('/admin/bookings')
             dispatch({ type: DELETE_BOOKING_RESET })
         }
 
 
-    }, [dispatch, isDeleted, deleteError, error])
+    }, [dispatch, deleteError, isDeleted])
 
 
     const setBookings = () => {
@@ -82,7 +84,7 @@ const AllBookings = () => {
                 checkOut: new Date(booking.checkOutDate).toLocaleString('en-US'),
                 amount: `$${booking.amountPaid}`,
                 actions:
-                    <div className='col-6 col-md-12 col-sm-12 d-flex justify-content-center align-items-center'>
+                    <>
                         <Link href={`/admin/bookings/${booking._id}`}>
                             <a className="btn btn-primary">
                                 <i className="fa fa-eye"></i>
@@ -97,7 +99,7 @@ const AllBookings = () => {
                             <i className="fa fa-trash"></i>
                         </button>
 
-                    </div>
+                    </>
             })
         })
 

@@ -7,7 +7,9 @@ import sendEmail from '../utils/sendEmail'
 
 import absoluteUrl from 'next-absolute-url'
 import crypto from 'crypto'
-
+import firebase from '../firebase';
+import { getStorage, ref, uploadString, getDownloadURL, deleteObject } from "firebase/storage";
+const storage = getStorage();
 // Setting up cloudinary config
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -19,11 +21,11 @@ cloudinary.config({
 // Register user   =>   /api/auth/register
 const registerUser = catchAsyncErrors(async (req, res) => {
 
-    const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
-        folder: 'bookit/avatars',
-        width: '150',
-        crop: 'scale'
-    })
+    // const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
+    //     folder: 'bookit/avatars',
+    //     width: '150',
+    //     crop: 'scale'
+    // })
 
     const { name, email, password } = req.body;
 
@@ -32,10 +34,21 @@ const registerUser = catchAsyncErrors(async (req, res) => {
         email,
         password,
         avatar: {
-            public_id: result.public_id,
-            url: result.secure_url
+            public_id: 'empty',
+            url: 'empty'
         }
     });
+    const storageRef = ref(storage, `users/${user._id}`);
+    await uploadString(storageRef,req.body.avatar, 'data_url');
+    let url_avatar = await getDownloadURL(storageRef).then(url =>  url);
+
+    user.avatar = {
+        public_id: `users/${user._id}`,
+        url: url_avatar
+    }
+
+    await user.save();
+
 
     res.status(200).json({
         success: true,
@@ -71,22 +84,17 @@ const updateProfile = catchAsyncErrors(async (req, res) => {
     // Update avatar
     if (req.body.avatar !== '') {
 
-        const image_id = user.avatar.public_id;
 
-        // Delete user previous image/avatar
-        await cloudinary.v2.uploader.destroy(image_id);
-
-        const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
-            folder: 'bookit/avatars',
-            width: '150',
-            crop: 'scale'
-        })
-
+        // Update user previous image/avatar
+        const storageRef = ref(storage, `users/${user._id}`);
+        await uploadString(storageRef,req.body.avatar, 'data_url');
+        let url_avatar = await getDownloadURL(storageRef).then(url =>  url);
         user.avatar = {
-            public_id: result.public_id,
-            url: result.secure_url
+            public_id: `users/${user._id}`,
+            url: url_avatar
         }
 
+    await user.save();
     }
 
     await user.save();
@@ -241,10 +249,8 @@ const deleteUser = catchAsyncErrors(async (req, res) => {
     }
 
     // Remove avatar 
-    const image_id = user.avatar.public_id;
-    await cloudinary.v2.uploader.destroy(image_id)
-
-
+    const storageRef = ref(storage, `users/${user._id}`);
+    await deleteObject(storageRef)
     await user.remove();
 
     res.status(200).json({

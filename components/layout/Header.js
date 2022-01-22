@@ -33,11 +33,11 @@ function Header() {
 
         {user ? (
           <div className='ml-4 dropdown d-line'>
-             <a 
+             <button
+             type='button'
               className='btn dropdown-toggle mr-4'
               id='dropdownMenuButton'
               data-toggle='dropdown'
-              aria-haspopup='true'
               aria-expanded='false'
              >
                <figure className='avatar avatar-nav'>
@@ -48,7 +48,7 @@ function Header() {
                    />
                </figure>
                <span>{user && user.name}</span>
-             </a>
+             </button>
              <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
                   {user.role === 'admin' && (
                     <>

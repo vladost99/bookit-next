@@ -34,7 +34,7 @@ export function RoomDetails() {
 
 
     const excludedDates = [];
-    dates.forEach(date => {
+   dates && dates.forEach(date => {
         excludedDates.push(new Date(date));
     })
 

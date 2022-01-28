@@ -13,7 +13,7 @@ module.exports = {
         SMTP_FROM_NAME: 'BookIT',
         SMTP_FROM_EMAIL: 'noreply@bookit.com',
     
-        STRIPE_WEBHOOK_SECRET: 'whsec_4LXOrjW5iEH09ZYRuLIVVrRg1ClyMhtU',
+        STRIPE_WEBHOOK_SECRET: 'whsec_LCSM03Ihq24t8yKZwtm1wpFXxvYhVEzH',
         STRIPE_API_KEY: 'pk_test_51KFpVgAFpiETMzEzJM4k5qtQiiqzvO7wEQ8uHMLbhN5GdGj4iGw5CIjWdLLbB0g1J5T7oY4ouMLOHxfSqgEjzPdR00ZISMruW3',
         STRIPE_SECRET_KEY: 'sk_test_51KFpVgAFpiETMzEzuz846MGVvUyuaiyRooqtDZTt32cCkOkeLETBJlPeX7FumvIs3JMFV69O84N49ZyklyX3y2co00DuUwq3NL',
     

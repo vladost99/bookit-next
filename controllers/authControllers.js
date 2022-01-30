@@ -7,7 +7,6 @@ import sendEmail from '../utils/sendEmail'
 
 import absoluteUrl from 'next-absolute-url'
 import crypto from 'crypto'
-import firebase from '../firebase';
 import { getStorage, ref, uploadString, getDownloadURL, deleteObject } from "firebase/storage";
 const storage = getStorage();
 // Setting up cloudinary config
@@ -28,6 +27,11 @@ const registerUser = catchAsyncErrors(async (req, res) => {
     // })
 
     const { name, email, password } = req.body;
+    const canditate = await User.findOne({email: email});
+
+    if(canditate) {
+        return res.status(400).json({message: 'User with the same email already exists'})
+    }
 
     const user = await User.create({
         name,

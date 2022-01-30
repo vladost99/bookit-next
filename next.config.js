@@ -20,6 +20,6 @@ module.exports = {
         NEXTAUTH_URL: 'https://bookit-next-pi.vercel.app'
     },
     images: {
-        domains: ['res.cloudinary.com'],
+        domains: ['res.cloudinary.com', 'firebasestorage.googleapis.com'],
     },
 }

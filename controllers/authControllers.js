@@ -7,6 +7,7 @@ import sendEmail from '../utils/sendEmail'
 
 import absoluteUrl from 'next-absolute-url'
 import crypto from 'crypto'
+import firebase from '../firebase';
 import { getStorage, ref, uploadString, getDownloadURL, deleteObject } from "firebase/storage";
 const storage = getStorage();
 // Setting up cloudinary config
@@ -17,14 +18,9 @@ cloudinary.config({
 })
 
 
-// Register user   =>   /api/auth/register
 const registerUser = catchAsyncErrors(async (req, res) => {
 
-    // const result = await cloudinary.v2.uploader.upload(req.body.avatar, {
-    //     folder: 'bookit/avatars',
-    //     width: '150',
-    //     crop: 'scale'
-    // })
+   
 
     const { name, email, password } = req.body;
     const canditate = await User.findOne({email: email});

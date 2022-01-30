@@ -1,11 +1,12 @@
 import Room from '../models/room'
 import Booking from '../models/booking'
-
-import cloudinary from 'cloudinary'
-
 import ErrorHandler from '../utils/errorHandler'
 import catchAsyncErrors from '../middlewares/catchAsyncErrors'
 import APIFeatures from '../utils/apiFeatures'
+import { getStorage, ref, uploadString, getDownloadURL, deleteObject } from "firebase/storage";
+import { nanoid } from 'nanoid';
+import firebase from '../firebase';
+const storage = getStorage();
 
 // Create all rooms   =>   /api/rooms
 const allRooms = catchAsyncErrors(async (req, res) => {
@@ -44,13 +45,15 @@ const newRoom = catchAsyncErrors(async (req, res) => {
 
     for (let i = 0; i < images.length; i++) {
 
-        const result = await cloudinary.v2.uploader.upload(images[i], {
-            folder: 'bookit/rooms',
-        });
+      
+        const roomId = `rooms/${nanoid()}`;
+        const storageRef = ref(storage, roomId);
+        await uploadString(images[i], 'data_url');
+        let result = await getDownloadURL(storageRef).then(url =>  url);
 
         imagesLinks.push({
-            public_id: result.public_id,
-            url: result.secure_url
+            public_id: roomId,
+            url: result
         })
 
     }
@@ -95,7 +98,9 @@ const updateRoom = catchAsyncErrors(async (req, res) => {
 
         // Delete images associated with the room
         for (let i = 0; i < room.images.length; i++) {
-            await cloudinary.v2.uploader.destroy(room.images[i].public_id)
+          
+           const storageRef = ref(storage, room.images[i].public_id);
+           await deleteObject(storageRef);
         }
 
         let imagesLinks = []
@@ -103,14 +108,16 @@ const updateRoom = catchAsyncErrors(async (req, res) => {
 
         for (let i = 0; i < images.length; i++) {
 
-            const result = await cloudinary.v2.uploader.upload(images[i], {
-                folder: 'bookit/rooms',
-            });
-
+            const roomId = `rooms/${nanoid()}`;
+            const storageRef = ref(storage, roomId);
+            await uploadString(storageRef, images[i], 'data_url');
+            let result = await getDownloadURL(storageRef).then(url =>  url);
+    
             imagesLinks.push({
-                public_id: result.public_id,
-                url: result.secure_url
+                public_id: roomId,
+                url: result
             })
+    
 
         }
 
@@ -143,7 +150,8 @@ const deleteRoom = catchAsyncErrors(async (req, res) => {
 
     // Delete images associated with the room
     for (let i = 0; i < room.images.length; i++) {
-        await cloudinary.v2.uploader.destroy(room.images[i].public_id)
+        const storageRef = ref(storage, room.images[i].public_id);
+        await deleteObject(storageRef);
     }
 
     await room.remove();

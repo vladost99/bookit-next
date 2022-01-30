@@ -6,9 +6,9 @@ import Loader from '../layout/Loader'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify';
-
 import { updateRoom, getRoomDetails, clearErrors } from '../../redux/actions/roomActions'
 import { UPDATE_ROOM_RESET } from '../../redux/constants/roomConstants'
+import { compressImage } from './../../utils/compressFile';
 
 const UpdateRoom = () => {
 
@@ -100,7 +100,7 @@ const UpdateRoom = () => {
     }
 
 
-    const onChange = (e) => {
+    const onChange = async (e) => {
 
         const files = Array.from(e.target.files)
 
@@ -108,10 +108,10 @@ const UpdateRoom = () => {
         setOldImages([]);
         setImagesPreview([]);
 
-        files.forEach(file => {
+        for (let file of files) {
 
             const reader = new FileReader();
-
+            let resizeImage = await compressImage(file);
             reader.onload = () => {
                 if (reader.readyState === 2) {
                     setImages(oldArray => [...oldArray, reader.result]);
@@ -119,9 +119,9 @@ const UpdateRoom = () => {
                 }
             }
 
-            reader.readAsDataURL(file)
+            reader.readAsDataURL(resizeImage)
 
-        })
+        }
 
     }
 

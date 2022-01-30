@@ -29,7 +29,7 @@ const AllRooms = () => {
         }
 
         if (deleteError) {
-            toast.erroe(deleteError);
+            toast.error(deleteError);
             dispatch(clearErrors())
         }
 

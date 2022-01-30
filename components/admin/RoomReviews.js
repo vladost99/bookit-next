@@ -123,6 +123,7 @@ const RoomReviews = () => {
                     data={setReviews()}
                     className='px-3'
                     bordered
+                    responsive
                     striped
                     hover
                 />

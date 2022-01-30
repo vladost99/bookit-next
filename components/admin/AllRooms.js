@@ -122,6 +122,7 @@ const AllRooms = () => {
                         data={setRooms()}
                         className='px-3'
                         bordered
+                        responsive
                         striped
                         hover
                     />

@@ -134,6 +134,7 @@ const MyBookings = () => {
                 data={setBookings()}
                 className='px-3'
                 bordered
+                responsive
                 striped
                 hover
             />
